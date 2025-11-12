@@ -2,13 +2,15 @@ program Projeto;
 
 uses
   Vcl.Forms,
-  Unit1 in 'Unit1.pas' {Form1};
+  uFormMain in 'uFormMain.pas' {Form1},
+  uFuncoes in 'uFuncoes.pas',
+  uModel in 'uModel.pas';
 
 {$R *.res}
 
 begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TFormMain, FormMain);
   Application.Run;
 end.

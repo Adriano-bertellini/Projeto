@@ -1,0 +1,67 @@
+unit uModel;
+
+interface
+
+uses
+  System.SysUtils;
+
+type
+  TEndereco = class
+    private
+      FPropiedade:  string;
+      FLogradouro:  string;
+      FBairro:      string;
+      FCidade:      string;
+      FUF:          string;
+    public
+      property Logradouro: string read FLogradouro write FLogradouro;
+      property Bairro: string read FBairro write FBairro;
+      property Cidade: string read FCidade write FCidade;
+      property UF: string read FUF write FUF;
+      property Propriedade: string read FPropiedade write FPropiedade;
+  end;
+
+
+type
+  TPessoa = class
+    private
+      FID: Integer;
+      FNomeCompleto: String;
+      FCPF: String;
+      FEmail: String;
+      FDataNascimento: TDate;
+      FTelefone: String;
+      FEndereco: TEndereco;
+    public
+      constructor Create;
+      destructor Destroy; override;
+
+      property ID: Integer read FID write FID;
+      property NomeCompleto: string read FNomeCompleto write FNomeCompleto;
+      property CPF: string read FCPF write FCPf;
+      property DataNascimento: TDate read  FDataNascimento write FDataNascimento;
+      property Telefone: string read FTelefone write FTelefone;
+      property Email: string read FEmail write FEmail;
+
+      property Endereco: TEndereco read FEndereco write FEndereco;
+  end;
+
+
+implementation
+
+
+
+{ TPessoa }
+
+constructor TPessoa.Create;
+begin
+  FEndereco := TEndereco.Create;
+end;
+
+destructor TPessoa.Destroy;
+begin
+  FEndereco.Free;
+  inherited;
+end;
+
+end.

@@ -1,0 +1,9 @@
+unit Funcoes;
+
+uses System.SysUtils;
+
+interface
+
+implementation
+
+end.

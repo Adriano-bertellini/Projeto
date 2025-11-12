@@ -1,0 +1,11 @@
+unit Funcoes;
+
+interface
+
+uses System.SysUtils;
+
+procedure GerarID;
+
+implementation
+
+end.
