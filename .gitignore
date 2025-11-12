@@ -1,0 +1,26 @@
+*.exe
+*.identcache
+*.local
+*.res
+*.skincfg
+*.tvsconfig
+*.vlb
+*.dcu
+*.dcuil
+*.ddp
+*.~*
+*.bak
+*.tmp
+*.dll
+*.bpl
+*.map
+Server/*.stat
+Settings/*.stat
+Package/*.stat
+Client/*.stat
+/cliente/*.stat
+
+# Delphi history and backups
+__history/
+__recovery/
+*.~*

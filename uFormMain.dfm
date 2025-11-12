@@ -28,7 +28,6 @@ object FormMain: TFormMain
     Color = clWhite
     ParentBackground = False
     TabOrder = 0
-    ExplicitWidth = 687
     object Label1: TLabel
       Left = 0
       Top = 0
@@ -58,8 +57,6 @@ object FormMain: TFormMain
     Color = clWhite
     ParentBackground = False
     TabOrder = 1
-    ExplicitWidth = 687
-    ExplicitHeight = 341
   end
   object PageControl1: TPageControl
     Left = 0
@@ -70,13 +67,10 @@ object FormMain: TFormMain
     Align = alClient
     TabOrder = 2
     OnChange = PageControl1Change
-    ExplicitWidth = 687
-    ExplicitHeight = 341
+    ExplicitTop = 124
     object TabSheet2: TTabSheet
       Caption = 'Listagem'
       ImageIndex = 1
-      ExplicitWidth = 679
-      ExplicitHeight = 313
       object DBGrid1: TDBGrid
         Left = 0
         Top = 0
@@ -113,8 +107,6 @@ object FormMain: TFormMain
     end
     object tabCadastro: TTabSheet
       Caption = 'Cadastro'
-      ExplicitWidth = 679
-      ExplicitHeight = 313
       object Panel5: TPanel
         Left = 0
         Top = 0
@@ -125,33 +117,12 @@ object FormMain: TFormMain
         Color = clWhite
         ParentBackground = False
         TabOrder = 0
-        ExplicitWidth = 679
-        ExplicitHeight = 313
-        object Label19: TLabel
-          Left = 1
-          Top = 2
-          Width = 35
-          Height = 13
-          Caption = 'Status:'
-        end
-        object lblStatus: TLabel
-          Left = 42
-          Top = 2
-          Width = 37
-          Height = 13
-          Caption = 'Status'
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clBlack
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          Font.Style = [fsBold]
-          ParentFont = False
-        end
         object gpbPessoa: TGroupBox
           Left = 0
-          Top = 19
-          Width = 609
-          Height = 105
+          Top = 24
+          Width = 640
+          Height = 129
+          Align = alTop
           Caption = 'Pessoa'
           Enabled = False
           Font.Charset = DEFAULT_CHARSET
@@ -163,7 +134,7 @@ object FormMain: TFormMain
           TabOrder = 0
           object Label21: TLabel
             Left = 7
-            Top = 19
+            Top = 44
             Width = 102
             Height = 13
             Caption = 'Nome Completo *:'
@@ -176,7 +147,7 @@ object FormMain: TFormMain
           end
           object Label22: TLabel
             Left = 341
-            Top = 73
+            Top = 98
             Width = 62
             Height = 13
             Caption = 'Telefone *:'
@@ -189,7 +160,7 @@ object FormMain: TFormMain
           end
           object Label23: TLabel
             Left = 7
-            Top = 45
+            Top = 70
             Width = 48
             Height = 13
             Caption = 'E-mail *:'
@@ -202,7 +173,7 @@ object FormMain: TFormMain
           end
           object Label24: TLabel
             Left = 341
-            Top = 46
+            Top = 71
             Width = 126
             Height = 13
             Caption = 'Data de Nascimento *:'
@@ -215,7 +186,7 @@ object FormMain: TFormMain
           end
           object Label25: TLabel
             Left = 7
-            Top = 73
+            Top = 98
             Width = 33
             Height = 13
             Caption = 'CPF *:'
@@ -226,30 +197,43 @@ object FormMain: TFormMain
             Font.Style = [fsBold]
             ParentFont = False
           end
+          object Label2: TLabel
+            Left = 7
+            Top = 23
+            Width = 16
+            Height = 13
+            Caption = 'ID:'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clNavy
+            Font.Height = -11
+            Font.Name = 'Tahoma'
+            Font.Style = [fsBold]
+            ParentFont = False
+          end
           object edtNomeCompleto: TEdit
             Left = 115
-            Top = 15
+            Top = 40
             Width = 470
             Height = 21
             TabOrder = 0
           end
           object edtTelefone: TEdit
             Left = 409
-            Top = 69
+            Top = 94
             Width = 176
             Height = 21
             TabOrder = 1
           end
           object edtEmail: TEdit
             Left = 61
-            Top = 42
+            Top = 67
             Width = 265
             Height = 21
             TabOrder = 2
           end
           object dateDataNascimento: TDateTimePicker
             Left = 473
-            Top = 42
+            Top = 67
             Width = 112
             Height = 21
             Date = 45972.746819976860000000
@@ -258,17 +242,26 @@ object FormMain: TFormMain
           end
           object edtCPF: TEdit
             Left = 46
-            Top = 69
+            Top = 94
             Width = 152
             Height = 21
             TabOrder = 4
           end
+          object edtID: TEdit
+            Left = 46
+            Top = 19
+            Width = 63
+            Height = 21
+            ReadOnly = True
+            TabOrder = 5
+          end
         end
         object gpbEndereco: TGroupBox
           Left = 0
-          Top = 130
-          Width = 609
-          Height = 107
+          Top = 153
+          Width = 640
+          Height = 109
+          Align = alTop
           Caption = 'Endere'#231'o'
           Enabled = False
           Font.Charset = DEFAULT_CHARSET
@@ -278,6 +271,7 @@ object FormMain: TFormMain
           Font.Style = []
           ParentFont = False
           TabOrder = 1
+          ExplicitTop = 24
           object Label26: TLabel
             Left = 358
             Top = 75
@@ -408,6 +402,36 @@ object FormMain: TFormMain
               'TO')
           end
         end
+        object Panel4: TPanel
+          AlignWithMargins = True
+          Left = 3
+          Top = 3
+          Width = 634
+          Height = 18
+          Align = alTop
+          BevelOuter = bvNone
+          TabOrder = 2
+          object Label19: TLabel
+            Left = 1
+            Top = 2
+            Width = 35
+            Height = 13
+            Caption = 'Status:'
+          end
+          object lblStatus: TLabel
+            Left = 42
+            Top = 2
+            Width = 37
+            Height = 13
+            Caption = 'Status'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clBlack
+            Font.Height = -11
+            Font.Name = 'Tahoma'
+            Font.Style = [fsBold]
+            ParentFont = False
+          end
+        end
       end
     end
   end
@@ -423,7 +447,6 @@ object FormMain: TFormMain
     Color = clWhite
     ParentBackground = False
     TabOrder = 3
-    ExplicitWidth = 687
     object btnEditar: TSpeedButton
       Tag = 3
       Left = 130
@@ -566,7 +589,8 @@ object FormMain: TFormMain
         47004C704700}
       Layout = blGlyphTop
       OnClick = btnEditarClick
-      ExplicitLeft = 8
+      ExplicitLeft = 129
+      ExplicitTop = 4
     end
     object btnDeletar: TSpeedButton
       Tag = 2
@@ -710,7 +734,7 @@ object FormMain: TFormMain
         47004C704700}
       Layout = blGlyphTop
       OnClick = btnDeletarClick
-      ExplicitLeft = 8
+      ExplicitTop = 4
     end
     object btnInserir: TSpeedButton
       Tag = 1
@@ -854,7 +878,7 @@ object FormMain: TFormMain
         47004C704700}
       Layout = blGlyphTop
       OnClick = btnInserirClick
-      ExplicitLeft = 8
+      ExplicitTop = -4
     end
     object btnSalvar: TSpeedButton
       Tag = 4
@@ -1030,7 +1054,7 @@ object FormMain: TFormMain
   end
   object DSPrinc: TDataSource
     DataSet = MemPrinc
-    Left = 16
-    Top = 56
+    Left = 60
+    Top = 8
   end
 end

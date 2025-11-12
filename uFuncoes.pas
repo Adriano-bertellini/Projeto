@@ -9,6 +9,7 @@ uses   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System
   FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
   FireDAC.Comp.DataSet, FireDAC.Comp.Client, Vcl.Grids, Vcl.DBGrids, System.Generics.Collections, uModel;
 
+
 function GerarID(): Integer;
 procedure GerarStatus(Sender: TObject);
 procedure CondicaoTravas();
@@ -123,18 +124,19 @@ end;
 
 procedure LimparCampos();
 begin
-  FormMain.edtNomeCompleto.Text    := '';
-  FormMain.edtEmail.Text           := '';
-  FormMain.edtCPF.Text             := '';
-  FormMain.edtTelefone.Text        := '';
+  FormMain.edtID.Clear;
+  FormMain.edtNomeCompleto.Text := '';
+  FormMain.edtEmail.Text := '';
+  FormMain.edtCPF.Text := '';
+  FormMain.edtTelefone.Text := '';
   FormMain.dateDataNascimento.Date := 0;
 
-  FormMain.cmbUF.Text               := '';
-  FormMain.edtCidade.Text           := '';
-  FormMain.edtBairro.Text           := '';
-  FormMain.edtLogradouro.Text       := '';
-  FormMain.edtPropriedade.Text      := '';
-  FormMain.cmbUF.Text               := '';
+  FormMain.cmbUF.Text := '';
+  FormMain.edtCidade.Text := '';
+  FormMain.edtBairro.Text := '';
+  FormMain.edtLogradouro.Text := '';
+  FormMain.edtPropriedade.Text := '';
+  FormMain.cmbUF.ItemIndex := 1
 end;
 
 function SomenteDigitos(const S: string): string;
