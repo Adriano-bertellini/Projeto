@@ -2,8 +2,8 @@ object FormMain: TFormMain
   Left = 0
   Top = 0
   Caption = 'FormMain'
-  ClientHeight = 429
-  ClientWidth = 648
+  ClientHeight = 436
+  ClientWidth = 615
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -19,7 +19,7 @@ object FormMain: TFormMain
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 648
+    Width = 615
     Height = 81
     Align = alTop
     BevelEdges = [beBottom]
@@ -28,10 +28,11 @@ object FormMain: TFormMain
     Color = clWhite
     ParentBackground = False
     TabOrder = 0
+    ExplicitWidth = 648
     object Label1: TLabel
       Left = 0
       Top = 0
-      Width = 648
+      Width = 615
       Height = 79
       Align = alClient
       Alignment = taCenter
@@ -50,32 +51,37 @@ object FormMain: TFormMain
   object Panel2: TPanel
     Left = 0
     Top = 120
-    Width = 648
-    Height = 309
+    Width = 615
+    Height = 316
     Align = alClient
     BevelOuter = bvNone
     Color = clWhite
     ParentBackground = False
     TabOrder = 1
+    ExplicitWidth = 648
+    ExplicitHeight = 309
   end
   object PageControl1: TPageControl
     Left = 0
     Top = 120
-    Width = 648
-    Height = 309
+    Width = 615
+    Height = 316
     ActivePage = tabCadastro
     Align = alClient
     TabOrder = 2
     OnChange = PageControl1Change
-    ExplicitTop = 124
+    ExplicitWidth = 648
+    ExplicitHeight = 309
     object TabSheet2: TTabSheet
       Caption = 'Listagem'
       ImageIndex = 1
+      ExplicitWidth = 640
+      ExplicitHeight = 281
       object DBGrid1: TDBGrid
         Left = 0
         Top = 0
-        Width = 640
-        Height = 281
+        Width = 607
+        Height = 288
         Align = alClient
         DataSource = DSPrinc
         ReadOnly = True
@@ -107,20 +113,24 @@ object FormMain: TFormMain
     end
     object tabCadastro: TTabSheet
       Caption = 'Cadastro'
+      ExplicitWidth = 640
+      ExplicitHeight = 281
       object Panel5: TPanel
         Left = 0
         Top = 0
-        Width = 640
-        Height = 281
+        Width = 607
+        Height = 288
         Align = alClient
         BevelOuter = bvNone
         Color = clWhite
         ParentBackground = False
         TabOrder = 0
+        ExplicitWidth = 640
+        ExplicitHeight = 281
         object gpbPessoa: TGroupBox
           Left = 0
           Top = 24
-          Width = 640
+          Width = 607
           Height = 129
           Align = alTop
           Caption = 'Pessoa'
@@ -132,6 +142,7 @@ object FormMain: TFormMain
           Font.Style = []
           ParentFont = False
           TabOrder = 0
+          ExplicitWidth = 640
           object Label21: TLabel
             Left = 7
             Top = 44
@@ -215,14 +226,14 @@ object FormMain: TFormMain
             Top = 40
             Width = 470
             Height = 21
-            TabOrder = 0
+            TabOrder = 1
           end
           object edtTelefone: TEdit
             Left = 409
             Top = 94
             Width = 176
             Height = 21
-            TabOrder = 1
+            TabOrder = 5
           end
           object edtEmail: TEdit
             Left = 61
@@ -253,14 +264,14 @@ object FormMain: TFormMain
             Width = 63
             Height = 21
             ReadOnly = True
-            TabOrder = 5
+            TabOrder = 0
           end
         end
         object gpbEndereco: TGroupBox
           Left = 0
           Top = 153
-          Width = 640
-          Height = 109
+          Width = 607
+          Height = 128
           Align = alTop
           Caption = 'Endere'#231'o'
           Enabled = False
@@ -271,7 +282,7 @@ object FormMain: TFormMain
           Font.Style = []
           ParentFont = False
           TabOrder = 1
-          ExplicitTop = 24
+          ExplicitWidth = 640
           object Label26: TLabel
             Left = 358
             Top = 75
@@ -337,33 +348,46 @@ object FormMain: TFormMain
             Font.Style = [fsBold]
             ParentFont = False
           end
+          object Label3: TLabel
+            Left = 11
+            Top = 102
+            Width = 16
+            Height = 13
+            Caption = 'N'#186':'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clNavy
+            Font.Height = -11
+            Font.Name = 'Tahoma'
+            Font.Style = [fsBold]
+            ParentFont = False
+          end
           object edtPropriedade: TEdit
             Left = 436
             Top = 72
             Width = 149
             Height = 21
-            TabOrder = 0
+            TabOrder = 4
           end
           object edtBairro: TEdit
             Left = 55
             Top = 45
             Width = 530
             Height = 21
-            TabOrder = 1
+            TabOrder = 2
           end
           object edtLogradouro: TEdit
             Left = 85
             Top = 72
             Width = 265
             Height = 21
-            TabOrder = 2
+            TabOrder = 3
           end
           object edtCidade: TEdit
             Left = 261
             Top = 17
             Width = 324
             Height = 21
-            TabOrder = 3
+            TabOrder = 1
           end
           object cmbUF: TComboBox
             Left = 45
@@ -371,7 +395,7 @@ object FormMain: TFormMain
             Width = 145
             Height = 21
             Style = csDropDownList
-            TabOrder = 4
+            TabOrder = 0
             Items.Strings = (
               'AC'
               'AL'
@@ -401,16 +425,27 @@ object FormMain: TFormMain
               'SE'
               'TO')
           end
+          object edtNumero: TEdit
+            Left = 33
+            Top = 99
+            Width = 49
+            Height = 21
+            NumbersOnly = True
+            TabOrder = 5
+          end
         end
         object Panel4: TPanel
           AlignWithMargins = True
           Left = 3
           Top = 3
-          Width = 634
+          Width = 601
           Height = 18
           Align = alTop
           BevelOuter = bvNone
           TabOrder = 2
+          ExplicitLeft = 7
+          ExplicitTop = 19
+          ExplicitWidth = 634
           object Label19: TLabel
             Left = 1
             Top = 2
@@ -438,7 +473,7 @@ object FormMain: TFormMain
   object Panel3: TPanel
     Left = 0
     Top = 81
-    Width = 648
+    Width = 615
     Height = 39
     Align = alTop
     BevelEdges = [beBottom]
@@ -447,6 +482,8 @@ object FormMain: TFormMain
     Color = clWhite
     ParentBackground = False
     TabOrder = 3
+    ExplicitTop = 75
+    ExplicitWidth = 648
     object btnEditar: TSpeedButton
       Tag = 3
       Left = 130
@@ -1025,6 +1062,27 @@ object FormMain: TFormMain
       ExplicitLeft = 226
       ExplicitTop = 4
     end
+    object Button1: TButton
+      AlignWithMargins = True
+      Left = 527
+      Top = 3
+      Width = 85
+      Height = 31
+      Align = alRight
+      Caption = 'Carregar Dados'
+      TabOrder = 0
+      OnClick = Button1Click
+      ExplicitLeft = 560
+    end
+  end
+  object memArquivos: TMemo
+    Left = 8
+    Top = 3000
+    Width = 965
+    Height = 89
+    Lines.Strings = (
+      'memArquivos')
+    TabOrder = 4
   end
   object MemPrinc: TFDMemTable
     FetchOptions.AssignedValues = [evMode]
@@ -1056,5 +1114,15 @@ object FormMain: TFormMain
     DataSet = MemPrinc
     Left = 60
     Top = 8
+  end
+  object SaveDialog1: TSaveDialog
+    FileName = 'C:\Users\Adriano Bertellini\Documents\t'
+    Left = 520
+    Top = 24
+  end
+  object OpenDialog1: TOpenDialog
+    InitialDir = 'C:\ArquivosLogTxt'
+    Left = 360
+    Top = 104
   end
 end

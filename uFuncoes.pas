@@ -9,147 +9,33 @@ uses   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System
   FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
   FireDAC.Comp.DataSet, FireDAC.Comp.Client, Vcl.Grids, Vcl.DBGrids, System.Generics.Collections, uModel;
 
+type
+  TFuncao = class
+    class function IsCPF(const S: string): Boolean;
+    class function FormataCPF(const S: string): string;
+    class function SomenteDigitos(const S: string): string;
+  end;
 
-function GerarID(): Integer;
-procedure GerarStatus(Sender: TObject);
-procedure CondicaoTravas();
-procedure LimparCampos();
-function IsCPF(const S: string): Boolean;
-function FormataCPF(const S: string): string;
 
 implementation
 
 uses uFormMain;
 
-function GerarID(): Integer;
-var
-  UltimoID: Integer;
-begin
-  UltimoID := uFormMain.FormMain.MemPrinc.RecordCount + 1;
-  Result := UltimoID;
-end;
+{ TFuncao }
 
-procedure GerarStatus(Sender: TObject);
+class function TFuncao.FormataCPF(const S: string): string;
+var
+  CPF: string;
 begin
-  if Sender = FormMain.btnSalvar  then
-  begin
-    with FormMain.lblStatus do
-    begin
-      Font.Color := clBlue;
-      Caption    := 'Em modo de salvamento!';
-      FormMain.gpbPessoa.Enabled   := False;
-      FormMain.gpbEndereco.Enabled := False;
-      FormMain.btnSalvar.Enabled   := False;
-      FormMain.btnDeletar.Enabled  := False;
-      FormMain.btnEditar.Enabled   := False;
-      FormMain.btnInserir.Enabled  := False;
-    end;
-  end
-  else if Sender = FormMain.btnDeletar  then
-  begin
-    with FormMain.lblStatus do
-    begin
-      Font.Color := clRed;
-      Caption    := 'Em modo de exclusão!';
-      FormMain.gpbPessoa.Enabled   := False;
-      FormMain.gpbEndereco.Enabled := False;
-      FormMain.btnSalvar.Enabled   := False;
-      FormMain.btnDeletar.Enabled  := False;
-      FormMain.btnEditar.Enabled   := False;
-      FormMain.btnInserir.Enabled  := False;
-    end;
-  end
-  else if Sender = FormMain.btnInserir  then
-  begin
-    with FormMain.lblStatus do
-    begin
-      Font.Color                 := clGreen;
-      Caption                    := 'Em modo de inserção!';
-      FormMain.gpbPessoa.Enabled := True;
-      FormMain.gpbEndereco.Enabled := True;
-      FormMain.btnSalvar.Enabled   := True;
-      FormMain.btnDeletar.Enabled  := False;
-      FormMain.btnEditar.Enabled   := False;
-      FormMain.btnInserir.Enabled  := False;
-    end;
-  end
-  else if Sender = FormMain.btnEditar then
-  begin
-    with FormMain.lblStatus do
-    begin
-      Font.Color  := clGreen;
-      Caption     := 'Em modo de edição!';
-      FormMain.gpbPessoa.Enabled   := True;
-      FormMain.gpbEndereco.Enabled := True;
-      FormMain.btnSalvar.Enabled   := True;
-      FormMain.btnDeletar.Enabled  := False;
-      FormMain.btnEditar.Enabled   := False;
-      FormMain.btnInserir.Enabled  := False;
-    end;
-  end
+  CPF := SomenteDigitos(S);
+  if Length(CPF) = 11 then
+    Result := Copy(CPF,1,3) + '.' + Copy(CPF,4,3) + '.' +
+              Copy(CPF,7,3) + '-' + Copy(CPF,10,2)
   else
-  begin
-    with FormMain.lblStatus do
-    begin
-      Font.Color  := clOlive;
-      Caption     := 'Em nenhum modo!';
-      FormMain.gpbPessoa.Enabled   := False;
-      FormMain.gpbEndereco.Enabled := False;
-      FormMain.btnSalvar.Enabled   := False;
-      FormMain.btnDeletar.Enabled  := True;
-      FormMain.btnEditar.Enabled   := True;
-      FormMain.btnInserir.Enabled  := True;
-    end;
-  end;
+    Result := S;
 end;
 
-procedure CondicaoTravas();
-begin
-  // Validações do campo de Pessoa
-  if Trim(FormMain.edtNomeCompleto.Text) = '' then
-    raise Exception.Create('Preencha o campo de nome!')
-  else if Trim(FormMain.edtTelefone.Text) = '' then
-    raise Exception.Create('Preencha o campo de Telefone!')
-  else if Trim(FormMain.edtEmail.Text) = '' then
-    raise Exception.Create('Preencha o campo de Email!')
-  else if Trim(FormMain.edtCPF.Text) = '' then
-    raise Exception.Create('Preencha o campo de CPF!')
-  else if FormMain.dateDataNascimento.Date = 0 then
-    raise Exception.Create('Preencha o número de Telefone')
-  else if Trim(FormMain.cmbUF.Text) = '' then
-    raise Exception.Create('Preencha a UF')
-  else if Trim(FormMain.edtCidade.Text) = '' then
-    raise Exception.Create('Preencha a Cidade');
-end;
-
-procedure LimparCampos();
-begin
-  FormMain.edtID.Clear;
-  FormMain.edtNomeCompleto.Text := '';
-  FormMain.edtEmail.Text := '';
-  FormMain.edtCPF.Text := '';
-  FormMain.edtTelefone.Text := '';
-  FormMain.dateDataNascimento.Date := 0;
-
-  FormMain.cmbUF.Text := '';
-  FormMain.edtCidade.Text := '';
-  FormMain.edtBairro.Text := '';
-  FormMain.edtLogradouro.Text := '';
-  FormMain.edtPropriedade.Text := '';
-  FormMain.cmbUF.ItemIndex := 1
-end;
-
-function SomenteDigitos(const S: string): string;
-var
-  c: Char;
-begin
-  Result := '';
-  for c in S do
-    if (c >= '0') and (c <= '9') then
-      Result := Result + c;
-end;
-
-function IsCPF(const S: string): Boolean;
+class function TFuncao.IsCPF(const S: string): Boolean;
 var
   CPF: string;
   i, soma, r, d10, d11: Integer;
@@ -179,17 +65,14 @@ begin
     (d11 = (Ord(CPF[11]) - Ord('0')));
 end;
 
-function FormataCPF(const S: string): string;
+class function TFuncao.SomenteDigitos(const S: string): string;
 var
-  CPF: string;
+  c: Char;
 begin
-  CPF := SomenteDigitos(S);
-  if Length(CPF) = 11 then
-    Result := Copy(CPF,1,3) + '.' + Copy(CPF,4,3) + '.' +
-              Copy(CPF,7,3) + '-' + Copy(CPF,10,2)
-  else
-    Result := S;
+  Result := '';
+  for c in S do
+    if (c >= '0') and (c <= '9') then
+      Result := Result + c;
 end;
-
 
 end.

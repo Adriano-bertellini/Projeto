@@ -13,12 +13,14 @@ type
       FBairro:      string;
       FCidade:      string;
       FUF:          string;
+      FNumero: Integer;
     public
+      property Propriedade: string read FPropiedade write FPropiedade;
       property Logradouro: string read FLogradouro write FLogradouro;
       property Bairro: string read FBairro write FBairro;
       property Cidade: string read FCidade write FCidade;
       property UF: string read FUF write FUF;
-      property Propriedade: string read FPropiedade write FPropiedade;
+      property Numero: integer read FNumero write FNumero;
   end;
 
 
@@ -32,6 +34,7 @@ type
       FDataNascimento: TDate;
       FTelefone: String;
       FEndereco: TEndereco;
+
     public
       constructor Create;
       destructor Destroy; override;
@@ -42,6 +45,7 @@ type
       property DataNascimento: TDate read  FDataNascimento write FDataNascimento;
       property Telefone: string read FTelefone write FTelefone;
       property Email: string read FEmail write FEmail;
+
 
       property Endereco: TEndereco read FEndereco write FEndereco;
   end;

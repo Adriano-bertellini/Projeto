@@ -83,6 +83,12 @@ type
       lblStatus: TLabel;
       edtID: TEdit;
       Label2: TLabel;
+    Label3: TLabel;
+    edtNumero: TEdit;
+    SaveDialog1: TSaveDialog;
+    Button1: TButton;
+    OpenDialog1: TOpenDialog;
+    memArquivos: TMemo;
       procedure FormClose(Sender: TObject; var Action: TCloseAction);
       procedure FormShow(Sender: TObject);
       procedure FormCreate(Sender: TObject);
@@ -91,12 +97,18 @@ type
       procedure btnDeletarClick(Sender: TObject);
       procedure PageControl1Change(Sender: TObject);
       procedure btnEditarClick(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
    private
       { Private declarations }
       FGuardarCadastro: TObjectList<TPessoa>;
-   public
       procedure CarregarGrid;
       function ObterPessoa(ID: Integer): TPessoa;
+      procedure GerarStatus(Sender: TObject);
+      procedure CondicaoTravas();
+      procedure LimparCampos();
+      procedure gerarArquivoTxt();
+   public
+
       { Public declarations }
 
    end;
@@ -112,6 +124,9 @@ uses uFuncoes;
 
 procedure TFormMain.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
+  if FGuardarCadastro.Count > 0 then
+    gerarArquivoTxt;
+
    Action := caFree;
    FormMain := nil;
    FGuardarCadastro.Free;
@@ -132,6 +147,138 @@ begin
    PageControl1.ActivePageIndex := 0;
 end;
 
+procedure TFormMain.gerarArquivoTxt;
+var
+   Pessoa: TPessoa;
+   Diretorio: String;
+   Lista: TStringList;
+begin
+  try
+    Lista := TStringList.Create;
+    for Pessoa in FGuardarCadastro do
+    begin
+      Lista.Add ( Pessoa.ID.ToString + ';' +
+                            Pessoa.NomeCompleto + ';'+
+                            Pessoa.CPF + ';' +
+                            DateToStr(Pessoa.DataNascimento) + ';' +
+                            Pessoa.Email + ';' +
+                            Pessoa.Telefone + ';' +
+                            Pessoa.Endereco.Numero.ToString + ';' +
+                            Pessoa.Endereco.Cidade + ';' +
+                            Pessoa.Endereco.UF + ';' +
+                            Pessoa.Endereco.Bairro + ';' +
+                            Pessoa.Endereco.Logradouro + ';' +
+                            Pessoa.Endereco.Propriedade + ';'
+
+            );
+    end;
+
+    Diretorio := 'C:\ArquivosLogTxt\';
+
+    if not DirectoryExists(Diretorio) then
+      CreateDir(Diretorio);
+
+    SaveDialog1.FileName := Diretorio + 'memTxtArquivo' +  FormatDateTime('yyyy-mm-dd_hh-nn-ss', Now) + '.txt';
+
+    Lista.SaveToFile(SaveDialog1.FileName);
+
+    ShowMessage('Arquivo criado: ' + SaveDialog1.FileName);
+  finally
+    Lista.Free;
+  end;
+end;
+
+procedure TFormMain.GerarStatus(Sender: TObject);
+begin
+  if Sender = FormMain.btnSalvar  then
+  begin
+    with FormMain.lblStatus do
+    begin
+      Font.Color := clBlue;
+      Caption    := 'Em modo de salvamento!';
+    end;
+    FormMain.gpbPessoa.Enabled   := False;
+    FormMain.gpbEndereco.Enabled := False;
+    FormMain.btnSalvar.Enabled   := False;
+    FormMain.btnDeletar.Enabled  := False;
+    FormMain.btnEditar.Enabled   := False;
+    FormMain.btnInserir.Enabled  := False;
+  end
+  else if Sender = FormMain.btnDeletar  then
+  begin
+    with FormMain.lblStatus do
+    begin
+      Font.Color := clRed;
+      Caption    := 'Em modo de exclusão!';
+    end;
+    FormMain.gpbPessoa.Enabled   := False;
+    FormMain.gpbEndereco.Enabled := False;
+    FormMain.btnSalvar.Enabled   := False;
+    FormMain.btnDeletar.Enabled  := False;
+    FormMain.btnEditar.Enabled   := False;
+    FormMain.btnInserir.Enabled  := False;
+  end
+  else if Sender = FormMain.btnInserir  then
+  begin
+    with FormMain.lblStatus do
+    begin
+      Font.Color                 := clGreen;
+      Caption                    := 'Em modo de inserção!';
+    end;
+    FormMain.gpbPessoa.Enabled := True;
+    FormMain.gpbEndereco.Enabled := True;
+    FormMain.btnSalvar.Enabled   := True;
+    FormMain.btnDeletar.Enabled  := False;
+    FormMain.btnEditar.Enabled   := False;
+    FormMain.btnInserir.Enabled  := False;
+  end
+  else if Sender = FormMain.btnEditar then
+  begin
+    with FormMain.lblStatus do
+    begin
+      Font.Color  := clGreen;
+      Caption     := 'Em modo de edição!';
+    end;
+    FormMain.gpbPessoa.Enabled   := True;
+    FormMain.gpbEndereco.Enabled := True;
+    FormMain.btnSalvar.Enabled   := True;
+    FormMain.btnDeletar.Enabled  := False;
+    FormMain.btnEditar.Enabled   := False;
+    FormMain.btnInserir.Enabled  := False;
+  end
+  else
+  begin
+    with FormMain.lblStatus do
+    begin
+      Font.Color  := clOlive;
+      Caption     := 'Em nenhum modo!';
+    end;
+    FormMain.gpbPessoa.Enabled   := False;
+    FormMain.gpbEndereco.Enabled := False;
+    FormMain.btnSalvar.Enabled   := False;
+    FormMain.btnDeletar.Enabled  := True;
+    FormMain.btnEditar.Enabled   := True;
+    FormMain.btnInserir.Enabled  := True;
+  end;
+end;
+
+procedure TFormMain.LimparCampos;
+begin
+  edtID.Clear;
+  edtNomeCompleto.Text := '';
+  edtEmail.Text := '';
+  edtCPF.Text := '';
+  edtTelefone.Text := '';
+  dateDataNascimento.Date := 0;
+  cmbUF.Text := '';
+  edtCidade.Text := '';
+  edtBairro.Text := '';
+  edtLogradouro.Text := '';
+  edtPropriedade.Text := '';
+  cmbUF.ItemIndex := 1;
+  edtNumero.Text := '';
+end;
+
 procedure TFormMain.PageControl1Change(Sender: TObject);
 var
    Pessoa: TPessoa;
@@ -150,11 +297,14 @@ begin
             edtCPF.Text := Pessoa.CPF;
             edtTelefone.Text := Pessoa.Telefone;
             dateDataNascimento.Date := Pessoa.DataNascimento;
-            cmbUF.Text := Pessoa.Endereco.UF;
+            for I := 0 to cmbUF.Items.Count - 1 do
+              if cmbUF.Items[i] = Pessoa.Endereco.UF then
+                cmbUF.ItemIndex := I;
             edtCidade.Text := Pessoa.Endereco.Cidade;
             edtBairro.Text := Pessoa.Endereco.Bairro;
             edtLogradouro.Text := Pessoa.Endereco.Logradouro;
             edtPropriedade.Text := Pessoa.Endereco.Propriedade;
+            edtNumero.Text  := Pessoa.Endereco.Numero.ToString;
             exit;
          end;
       end;
@@ -169,6 +319,7 @@ begin
       edtBairro.Text := '';
       edtLogradouro.Text := '';
       edtPropriedade.Text := '';
+      edtNomeCompleto.Text := '';
       cmbUF.ItemIndex := -1;
    except
       on E: Exception do
@@ -224,18 +375,15 @@ end;
 procedure TFormMain.btnInserirClick(Sender: TObject);
 begin
    MemPrinc.Insert;
-
    GerarStatus(Sender);
-
    LimparCampos;
-
    PageControl1.ActivePageIndex := 1;
 end;
 
 procedure TFormMain.btnSalvarClick(Sender: TObject);
 var
    Pessoa: TPessoa;
-   I: Integer;
+
 begin
    GerarStatus(Sender);
 
@@ -249,15 +397,25 @@ begin
    // Condições
    CondicaoTravas;
 
-
    // Trava CPF;
-   if IsCPF(edtCPF.Text) then
-      edtCPF.Text := FormataCPF(edtCPF.Text)
+   if TFuncao.IsCPF(edtCPF.Text) then
+      edtCPF.Text := TFuncao.FormataCPF(edtCPF.Text)
    else
    begin
       GerarStatus(btnEditar);
       ShowMessage('CPF inválido!');
       exit;
+   end;
+
+   // Validar CPF Único
+   for Pessoa in FGuardarCadastro do
+   begin
+      if edtCPF.Text = Pessoa.CPF then
+      begin
+        ShowMessage('Já existe um CPF cadastro no sistema igual!');
+        edtCPF.Text := '';
+        exit;
+      end;
    end;
 
    if StrToIntDef(edtID.Text, 0) = 0 then
@@ -270,6 +428,7 @@ begin
       Pessoa.DataNascimento := dateDataNascimento.Date;
       Pessoa.Telefone := edtTelefone.Text;
       Pessoa.Email := edtEmail.Text;
+      Pessoa.Endereco.Numero := StrToIntDef(edtNumero.Text, 0);
 
       Pessoa.Endereco.Logradouro := edtLogradouro.Text;
       Pessoa.Endereco.Bairro := edtBairro.Text;
@@ -278,12 +437,6 @@ begin
       Pessoa.Endereco.UF := cmbUF.Text;
 
       FGuardarCadastro.Add(Pessoa);
-
-      // MemPrincID.AsInteger := Pessoa.ID;
-      // MemPrincNome.AsString := Pessoa.NomeCompleto;
-      // MemPrincEmail.AsString := Pessoa.Email;
-      // MemPrincCPF.AsString := Pessoa.CPF;
-      // MemPrinc.Post;
 
       PageControl1.ActivePageIndex := 0;
       ShowMessage('Registro salvo com sucesso!');
@@ -300,16 +453,12 @@ begin
       Pessoa.Telefone := edtTelefone.Text;
       Pessoa.DataNascimento := dateDataNascimento.Date;
 
+      Pessoa.Endereco.Numero := StrToIntDef(edtNumero.Text, 0);
       Pessoa.Endereco.Logradouro := edtLogradouro.Text;
       Pessoa.Endereco.Bairro := edtBairro.Text;
       Pessoa.Endereco.Cidade := edtCidade.Text;
       Pessoa.Endereco.Propriedade := edtPropriedade.Text;
       Pessoa.Endereco.UF := cmbUF.Text;
-
-      // MemPrincNome.AsString := edtNomeCompleto.Text;
-      // MemPrincEmail.AsString := edtEmail.Text;
-      // MemPrincCPF.AsString := edtCPF.Text;
-      // MemPrinc.Post;
 
       ShowMessage('Registro editado com sucesso!');
    end;
@@ -317,6 +466,161 @@ begin
    GerarStatus(nil);
    CarregarGrid;
 end;
+
+procedure TFormMain.Button1Click(Sender: TObject);
+var
+  Arquivo: TextFile;
+  I,J, Index: Integer;
+  TipoTexto, EscreverTexto, Linha: string;
+  Pessoa: TPessoa;
+begin
+  // Ler arquivos.
+  if OpenDialog1.Execute then
+  begin
+    try
+      memArquivos.Clear;
+      memArquivos.Lines.LoadFromFile(OpenDialog1.FileName);
+
+      for I := 0 to memArquivos.Lines.Count -1  do
+      begin
+        Linha := memArquivos.Lines[i];
+        Pessoa := TPessoa.Create;
+        EscreverTexto := '';
+        Index := 0;
+
+        for J := 1 to Length(Linha) do
+        begin
+          // ID
+          if ((Index = 0) and (Linha[J] <> ';')) then // Aqui vai ser o ID
+            EscreverTexto := EscreverTexto + Linha[J]
+          else if ((Index = 0) and (Linha[J] = ';')) then
+          begin
+            Index := Index + 1;
+            Pessoa.ID := StrToInt(EscreverTexto);
+            EscreverTexto := '';
+          end
+
+          // Nome
+          else if ((Index = 1) and (Linha[J] <> ';')) then
+            EscreverTexto := EscreverTexto + Linha[J]
+          else if ((Index = 1) and (Linha[J] = ';')) then
+          begin
+            Index := Index + 1;
+            Pessoa.NomeCompleto := EscreverTexto;
+            EscreverTexto := '';
+          end
+
+          // CPF
+          else if ((Index = 2) and (Linha[J] <> ';')) then
+            EscreverTexto := EscreverTexto + Linha[J]
+          else if ((Index = 2) and (Linha[J] = ';')) then
+          begin
+            Index := Index + 1;
+            Pessoa.CPF := EscreverTexto;
+            EscreverTexto := '';
+          end
+
+          // Data
+          else if ((Index = 3) and (Linha[J] <> ';')) then
+            EscreverTexto := EscreverTexto + Linha[J]
+          else if ((Index = 3) and (Linha[J] = ';')) then
+          begin
+            Index := Index + 1;
+            Pessoa.DataNascimento := StrToDate(EscreverTexto);
+            EscreverTexto := '';
+          end
+
+          // Email
+          else if ((Index = 4) and (Linha[J] <> ';')) then
+            EscreverTexto := EscreverTexto + Linha[J]
+          else if ((Index = 4) and (Linha[J] = ';')) then
+          begin
+            Index := Index + 1;
+            Pessoa.Email := EscreverTexto;
+            EscreverTexto := '';
+          end
+
+          // Telefone
+          else if ((Index = 5) and (Linha[J] <> ';')) then
+            EscreverTexto := EscreverTexto + Linha[J]
+          else if ((Index = 5) and (Linha[J] = ';')) then
+          begin
+            Index := Index + 1;
+            Pessoa.Telefone := EscreverTexto;
+            EscreverTexto := '';
+          end
+
+          // Numero Rua
+          else if ((Index = 6) and (Linha[J] <> ';')) then
+            EscreverTexto := EscreverTexto + Linha[J]
+          else if ((Index = 6) and (Linha[J] = ';')) then
+          begin
+            Index := Index + 1;
+            Pessoa.Endereco.Numero := StrToInt(EscreverTexto);
+            EscreverTexto := '';
+          end
+
+          // Cidade
+          else if ((Index = 7) and (Linha[J] <> ';')) then
+            EscreverTexto := EscreverTexto + Linha[J]
+          else if ((Index = 7) and (Linha[J] = ';')) then
+          begin
+            Index := Index + 1;
+            Pessoa.Endereco.Cidade := EscreverTexto;
+            EscreverTexto := '';
+          end
+
+          // UF
+          else if ((Index = 8) and (Linha[J] <> ';')) then
+            EscreverTexto := EscreverTexto + Linha[J]
+          else if ((Index = 8) and (Linha[J] = ';')) then
+          begin
+            Index := Index + 1;
+            Pessoa.Endereco.UF := EscreverTexto;
+            EscreverTexto := '';
+          end
+
+          // Bairro
+          else if ((Index = 9) and (Linha[J] <> ';')) then
+            EscreverTexto := EscreverTexto + Linha[J]
+          else if ((Index = 9) and (Linha[J] = ';')) then
+          begin
+            Index := Index + 1;
+            Pessoa.Endereco.Bairro := EscreverTexto;
+            EscreverTexto := '';
+          end
+
+          // Logradouro
+          else if ((Index = 10) and (Linha[J] <> ';')) then
+            EscreverTexto := EscreverTexto + Linha[J]
+          else if ((Index = 10) and (Linha[J] = ';')) then
+          begin
+            Index := Index + 1;
+            Pessoa.Endereco.Logradouro := EscreverTexto;
+            EscreverTexto := '';
+          end
+
+          // Propiedade
+          else if ((Index = 11) and (Linha[J] <> ';')) then
+            EscreverTexto := EscreverTexto + Linha[J]
+          else if ((Index = 11) and (Linha[J] = ';')) then
+          begin
+            Index := Index + 1;
+            Pessoa.Endereco.Propriedade := EscreverTexto;
+            EscreverTexto := ';';
+          end;
+        end;
+
+        FGuardarCadastro.Add(Pessoa);
+      end;
+    finally
+      CarregarGrid;
+    end;
+  end
+  else
+    raise Exception.Create('Arquivo não selecionado');
+end;
+
 
 procedure TFormMain.CarregarGrid;
 var
@@ -353,6 +657,25 @@ begin
    finally
       MemPrinc.EnableControls;
    end;
+end;
+
+procedure TFormMain.CondicaoTravas;
+begin
+  // Validações do campo de Pessoa
+  if Trim(edtNomeCompleto.Text) = '' then
+    raise Exception.Create('Preencha o campo de nome!')
+  else if Trim(edtTelefone.Text) = '' then
+    raise Exception.Create('Preencha o campo de Telefone!')
+  else if Trim(edtEmail.Text) = '' then
+    raise Exception.Create('Preencha o campo de Email!')
+  else if Trim(edtCPF.Text) = '' then
+    raise Exception.Create('Preencha o campo de CPF!')
+  else if dateDataNascimento.Date = 0 then
+    raise Exception.Create('Preencha o número de Telefone')
+  else if Trim(cmbUF.Text) = '' then
+    raise Exception.Create('Preencha a UF')
+  else if Trim(edtCidade.Text) = '' then
+    raise Exception.Create('Preencha a Cidade');
 end;
 
 function TFormMain.ObterPessoa(ID: Integer): TPessoa;
