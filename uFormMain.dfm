@@ -28,7 +28,6 @@ object FormMain: TFormMain
     Color = clWhite
     ParentBackground = False
     TabOrder = 0
-    ExplicitWidth = 648
     object Label1: TLabel
       Left = 0
       Top = 0
@@ -58,8 +57,6 @@ object FormMain: TFormMain
     Color = clWhite
     ParentBackground = False
     TabOrder = 1
-    ExplicitWidth = 648
-    ExplicitHeight = 309
   end
   object PageControl1: TPageControl
     Left = 0
@@ -70,13 +67,9 @@ object FormMain: TFormMain
     Align = alClient
     TabOrder = 2
     OnChange = PageControl1Change
-    ExplicitWidth = 648
-    ExplicitHeight = 309
     object TabSheet2: TTabSheet
       Caption = 'Listagem'
       ImageIndex = 1
-      ExplicitWidth = 640
-      ExplicitHeight = 281
       object DBGrid1: TDBGrid
         Left = 0
         Top = 0
@@ -91,6 +84,7 @@ object FormMain: TFormMain
         TitleFont.Height = -11
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
+        OnDblClick = DBGrid1DblClick
         Columns = <
           item
             Expanded = False
@@ -113,8 +107,6 @@ object FormMain: TFormMain
     end
     object tabCadastro: TTabSheet
       Caption = 'Cadastro'
-      ExplicitWidth = 640
-      ExplicitHeight = 281
       object Panel5: TPanel
         Left = 0
         Top = 0
@@ -125,8 +117,6 @@ object FormMain: TFormMain
         Color = clWhite
         ParentBackground = False
         TabOrder = 0
-        ExplicitWidth = 640
-        ExplicitHeight = 281
         object gpbPessoa: TGroupBox
           Left = 0
           Top = 24
@@ -142,7 +132,6 @@ object FormMain: TFormMain
           Font.Style = []
           ParentFont = False
           TabOrder = 0
-          ExplicitWidth = 640
           object Label21: TLabel
             Left = 7
             Top = 44
@@ -233,7 +222,7 @@ object FormMain: TFormMain
             Top = 94
             Width = 176
             Height = 21
-            TabOrder = 5
+            TabOrder = 4
           end
           object edtEmail: TEdit
             Left = 61
@@ -242,21 +231,12 @@ object FormMain: TFormMain
             Height = 21
             TabOrder = 2
           end
-          object dateDataNascimento: TDateTimePicker
-            Left = 473
-            Top = 67
-            Width = 112
-            Height = 21
-            Date = 45972.746819976860000000
-            Time = 45972.746819976860000000
-            TabOrder = 3
-          end
           object edtCPF: TEdit
             Left = 46
             Top = 94
             Width = 152
             Height = 21
-            TabOrder = 4
+            TabOrder = 3
           end
           object edtID: TEdit
             Left = 46
@@ -265,6 +245,12 @@ object FormMain: TFormMain
             Height = 21
             ReadOnly = True
             TabOrder = 0
+          end
+          object dateDataNascimento: TcxDateEdit
+            Left = 473
+            Top = 67
+            TabOrder = 5
+            Width = 112
           end
         end
         object gpbEndereco: TGroupBox
@@ -282,7 +268,6 @@ object FormMain: TFormMain
           Font.Style = []
           ParentFont = False
           TabOrder = 1
-          ExplicitWidth = 640
           object Label26: TLabel
             Left = 358
             Top = 75
@@ -443,9 +428,6 @@ object FormMain: TFormMain
           Align = alTop
           BevelOuter = bvNone
           TabOrder = 2
-          ExplicitLeft = 7
-          ExplicitTop = 19
-          ExplicitWidth = 634
           object Label19: TLabel
             Left = 1
             Top = 2
@@ -482,8 +464,6 @@ object FormMain: TFormMain
     Color = clWhite
     ParentBackground = False
     TabOrder = 3
-    ExplicitTop = 75
-    ExplicitWidth = 648
     object btnEditar: TSpeedButton
       Tag = 3
       Left = 130
@@ -626,7 +606,6 @@ object FormMain: TFormMain
         47004C704700}
       Layout = blGlyphTop
       OnClick = btnEditarClick
-      ExplicitLeft = 129
       ExplicitTop = 4
     end
     object btnDeletar: TSpeedButton
@@ -1059,8 +1038,7 @@ object FormMain: TFormMain
         47004C704700}
       Layout = blGlyphTop
       OnClick = btnSalvarClick
-      ExplicitLeft = 226
-      ExplicitTop = 4
+      ExplicitTop = -4
     end
     object Button1: TButton
       AlignWithMargins = True
@@ -1071,8 +1049,10 @@ object FormMain: TFormMain
       Align = alRight
       Caption = 'Carregar Dados'
       TabOrder = 0
+      Visible = False
       OnClick = Button1Click
-      ExplicitLeft = 560
+      ExplicitLeft = 530
+      ExplicitTop = 2
     end
   end
   object memArquivos: TMemo
@@ -1122,7 +1102,7 @@ object FormMain: TFormMain
   end
   object OpenDialog1: TOpenDialog
     InitialDir = 'C:\ArquivosLogTxt'
-    Left = 360
-    Top = 104
+    Left = 432
+    Top = 24
   end
 end

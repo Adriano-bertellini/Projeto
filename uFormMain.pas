@@ -33,7 +33,10 @@ uses
    Vcl.DBGrids,
    System.Generics.Collections,
    uModel,
-   System.Math;
+   System.Math,
+   ShellAPI, cxGraphics, cxControls, cxLookAndFeels, cxLookAndFeelPainters,
+  cxContainer, cxEdit, dxCore, cxDateUtils, cxTextEdit, cxMaskEdit,
+  cxDropDownEdit, cxCalendar;
 
 type
    TFormMain = class(TForm)
@@ -52,7 +55,6 @@ type
       edtNomeCompleto: TEdit;
       edtTelefone: TEdit;
       edtEmail: TEdit;
-      dateDataNascimento: TDateTimePicker;
       edtCPF: TEdit;
       gpbEndereco: TGroupBox;
       Label26: TLabel;
@@ -89,6 +91,7 @@ type
     Button1: TButton;
     OpenDialog1: TOpenDialog;
     memArquivos: TMemo;
+    dateDataNascimento: TcxDateEdit;
       procedure FormClose(Sender: TObject; var Action: TCloseAction);
       procedure FormShow(Sender: TObject);
       procedure FormCreate(Sender: TObject);
@@ -98,6 +101,7 @@ type
       procedure PageControl1Change(Sender: TObject);
       procedure btnEditarClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
+      procedure DBGrid1DblClick(Sender: TObject);
    private
       { Private declarations }
       FGuardarCadastro: TObjectList<TPessoa>;
@@ -123,7 +127,23 @@ uses uFuncoes;
 {$R *.dfm}
 
 procedure TFormMain.FormClose(Sender: TObject; var Action: TCloseAction);
+var
+  Diretorio: String;
 begin
+  Diretorio := 'C:\ArquivosLogTxt\';
+
+  // Aqui iremos deletar os arquivos
+  ShellExecute(
+                   0,
+                   'open',
+                   'cmd.exe',
+                   PChar('/C del /Q "C:\ArquivosLogTxt\banco.txt"'),
+                   nil,
+                   SW_HIDE
+                 );
+
+  Sleep(1000);
+
   if FGuardarCadastro.Count > 0 then
     gerarArquivoTxt;
 
@@ -138,6 +158,8 @@ begin
 
    MemPrinc.Close;
    MemPrinc.Open;
+
+   Button1Click(nil);
 
    GerarStatus(nil);
 end;
@@ -178,7 +200,7 @@ begin
     if not DirectoryExists(Diretorio) then
       CreateDir(Diretorio);
 
-    SaveDialog1.FileName := Diretorio + 'memTxtArquivo' +  FormatDateTime('yyyy-mm-dd_hh-nn-ss', Now) + '.txt';
+    SaveDialog1.FileName := Diretorio + 'banco' + '.txt';
 
     Lista.SaveToFile(SaveDialog1.FileName);
 
@@ -269,7 +291,7 @@ begin
   edtEmail.Text := '';
   edtCPF.Text := '';
   edtTelefone.Text := '';
-  dateDataNascimento.Date := 0;
+  dateDataNascimento.Text := '';
   cmbUF.Text := '';
   edtCidade.Text := '';
   edtBairro.Text := '';
@@ -383,6 +405,7 @@ end;
 procedure TFormMain.btnSalvarClick(Sender: TObject);
 var
    Pessoa: TPessoa;
+   ID: Integer;
 
 begin
    GerarStatus(Sender);
@@ -410,6 +433,7 @@ begin
    // Validar CPF Único
    for Pessoa in FGuardarCadastro do
    begin
+      GerarStatus(btnEditar);
       if edtCPF.Text = Pessoa.CPF then
       begin
         ShowMessage('Já existe um CPF cadastro no sistema igual!');
@@ -422,7 +446,18 @@ begin
    begin
       Pessoa := TPessoa.Create;
 
-      Pessoa.ID := FGuardarCadastro.Count + 1;
+      ID := 0;
+
+      MemPrinc.First;
+      while not MemPrinc.Eof do
+      begin
+        if ID < MemPrincID.AsInteger then
+          ID := MemPrincID.AsInteger;
+
+        MemPrinc.Next;
+      end;
+
+      Pessoa.ID := ID + 1;
       Pessoa.NomeCompleto := edtNomeCompleto.Text;
       Pessoa.CPF := edtCPF.Text;
       Pessoa.DataNascimento := dateDataNascimento.Date;
@@ -471,154 +506,151 @@ procedure TFormMain.Button1Click(Sender: TObject);
 var
   Arquivo: TextFile;
   I,J, Index: Integer;
-  TipoTexto, EscreverTexto, Linha: string;
+  TipoTexto, EscreverTexto, Linha, Diretorio: string;
   Pessoa: TPessoa;
 begin
+  Diretorio := 'C:\ArquivosLogTxt\' + 'banco.txt';
   // Ler arquivos.
-  if OpenDialog1.Execute then
-  begin
-    try
-      memArquivos.Clear;
-      memArquivos.Lines.LoadFromFile(OpenDialog1.FileName);
+  OpenDialog1.FileName := Diretorio;
+ try
+   memArquivos.Clear;
+   memArquivos.Lines.LoadFromFile(OpenDialog1.FileName);
 
-      for I := 0 to memArquivos.Lines.Count -1  do
-      begin
-        Linha := memArquivos.Lines[i];
-        Pessoa := TPessoa.Create;
-        EscreverTexto := '';
-        Index := 0;
+   for I := 0 to memArquivos.Lines.Count -1  do
+   begin
+     Linha := memArquivos.Lines[i];
+     Pessoa := TPessoa.Create;
+     EscreverTexto := '';
+     Index := 0;
 
-        for J := 1 to Length(Linha) do
-        begin
-          // ID
-          if ((Index = 0) and (Linha[J] <> ';')) then // Aqui vai ser o ID
-            EscreverTexto := EscreverTexto + Linha[J]
-          else if ((Index = 0) and (Linha[J] = ';')) then
-          begin
-            Index := Index + 1;
-            Pessoa.ID := StrToInt(EscreverTexto);
-            EscreverTexto := '';
-          end
+     for J := 1 to Length(Linha) do
+     begin
+       // ID
+       if ((Index = 0) and (Linha[J] <> ';')) then // Aqui vai ser o ID
+         EscreverTexto := EscreverTexto + Linha[J]
+       else if ((Index = 0) and (Linha[J] = ';')) then
+       begin
+         Index := Index + 1;
+         Pessoa.ID := StrToInt(EscreverTexto);
+         EscreverTexto := '';
+       end
 
-          // Nome
-          else if ((Index = 1) and (Linha[J] <> ';')) then
-            EscreverTexto := EscreverTexto + Linha[J]
-          else if ((Index = 1) and (Linha[J] = ';')) then
-          begin
-            Index := Index + 1;
-            Pessoa.NomeCompleto := EscreverTexto;
-            EscreverTexto := '';
-          end
+       // Nome
+       else if ((Index = 1) and (Linha[J] <> ';')) then
+         EscreverTexto := EscreverTexto + Linha[J]
+       else if ((Index = 1) and (Linha[J] = ';')) then
+       begin
+         Index := Index + 1;
+         Pessoa.NomeCompleto := EscreverTexto;
+         EscreverTexto := '';
+       end
 
-          // CPF
-          else if ((Index = 2) and (Linha[J] <> ';')) then
-            EscreverTexto := EscreverTexto + Linha[J]
-          else if ((Index = 2) and (Linha[J] = ';')) then
-          begin
-            Index := Index + 1;
-            Pessoa.CPF := EscreverTexto;
-            EscreverTexto := '';
-          end
+       // CPF
+       else if ((Index = 2) and (Linha[J] <> ';')) then
+         EscreverTexto := EscreverTexto + Linha[J]
+       else if ((Index = 2) and (Linha[J] = ';')) then
+       begin
+         Index := Index + 1;
+         Pessoa.CPF := EscreverTexto;
+         EscreverTexto := '';
+       end
 
-          // Data
-          else if ((Index = 3) and (Linha[J] <> ';')) then
-            EscreverTexto := EscreverTexto + Linha[J]
-          else if ((Index = 3) and (Linha[J] = ';')) then
-          begin
-            Index := Index + 1;
-            Pessoa.DataNascimento := StrToDate(EscreverTexto);
-            EscreverTexto := '';
-          end
+       // Data
+       else if ((Index = 3) and (Linha[J] <> ';')) then
+         EscreverTexto := EscreverTexto + Linha[J]
+       else if ((Index = 3) and (Linha[J] = ';')) then
+       begin
+         Index := Index + 1;
+         Pessoa.DataNascimento := StrToDate(EscreverTexto);
+         EscreverTexto := '';
+       end
 
-          // Email
-          else if ((Index = 4) and (Linha[J] <> ';')) then
-            EscreverTexto := EscreverTexto + Linha[J]
-          else if ((Index = 4) and (Linha[J] = ';')) then
-          begin
-            Index := Index + 1;
-            Pessoa.Email := EscreverTexto;
-            EscreverTexto := '';
-          end
+       // Email
+       else if ((Index = 4) and (Linha[J] <> ';')) then
+         EscreverTexto := EscreverTexto + Linha[J]
+       else if ((Index = 4) and (Linha[J] = ';')) then
+       begin
+         Index := Index + 1;
+         Pessoa.Email := EscreverTexto;
+         EscreverTexto := '';
+       end
 
-          // Telefone
-          else if ((Index = 5) and (Linha[J] <> ';')) then
-            EscreverTexto := EscreverTexto + Linha[J]
-          else if ((Index = 5) and (Linha[J] = ';')) then
-          begin
-            Index := Index + 1;
-            Pessoa.Telefone := EscreverTexto;
-            EscreverTexto := '';
-          end
+       // Telefone
+       else if ((Index = 5) and (Linha[J] <> ';')) then
+         EscreverTexto := EscreverTexto + Linha[J]
+       else if ((Index = 5) and (Linha[J] = ';')) then
+       begin
+         Index := Index + 1;
+         Pessoa.Telefone := EscreverTexto;
+         EscreverTexto := '';
+       end
 
-          // Numero Rua
-          else if ((Index = 6) and (Linha[J] <> ';')) then
-            EscreverTexto := EscreverTexto + Linha[J]
-          else if ((Index = 6) and (Linha[J] = ';')) then
-          begin
-            Index := Index + 1;
-            Pessoa.Endereco.Numero := StrToInt(EscreverTexto);
-            EscreverTexto := '';
-          end
+       // Numero Rua
+       else if ((Index = 6) and (Linha[J] <> ';')) then
+         EscreverTexto := EscreverTexto + Linha[J]
+       else if ((Index = 6) and (Linha[J] = ';')) then
+       begin
+         Index := Index + 1;
+         Pessoa.Endereco.Numero := StrToInt(EscreverTexto);
+         EscreverTexto := '';
+       end
 
-          // Cidade
-          else if ((Index = 7) and (Linha[J] <> ';')) then
-            EscreverTexto := EscreverTexto + Linha[J]
-          else if ((Index = 7) and (Linha[J] = ';')) then
-          begin
-            Index := Index + 1;
-            Pessoa.Endereco.Cidade := EscreverTexto;
-            EscreverTexto := '';
-          end
+       // Cidade
+       else if ((Index = 7) and (Linha[J] <> ';')) then
+         EscreverTexto := EscreverTexto + Linha[J]
+       else if ((Index = 7) and (Linha[J] = ';')) then
+       begin
+         Index := Index + 1;
+         Pessoa.Endereco.Cidade := EscreverTexto;
+         EscreverTexto := '';
+       end
 
-          // UF
-          else if ((Index = 8) and (Linha[J] <> ';')) then
-            EscreverTexto := EscreverTexto + Linha[J]
-          else if ((Index = 8) and (Linha[J] = ';')) then
-          begin
-            Index := Index + 1;
-            Pessoa.Endereco.UF := EscreverTexto;
-            EscreverTexto := '';
-          end
+       // UF
+       else if ((Index = 8) and (Linha[J] <> ';')) then
+         EscreverTexto := EscreverTexto + Linha[J]
+       else if ((Index = 8) and (Linha[J] = ';')) then
+       begin
+         Index := Index + 1;
+         Pessoa.Endereco.UF := EscreverTexto;
+         EscreverTexto := '';
+       end
 
-          // Bairro
-          else if ((Index = 9) and (Linha[J] <> ';')) then
-            EscreverTexto := EscreverTexto + Linha[J]
-          else if ((Index = 9) and (Linha[J] = ';')) then
-          begin
-            Index := Index + 1;
-            Pessoa.Endereco.Bairro := EscreverTexto;
-            EscreverTexto := '';
-          end
+       // Bairro
+       else if ((Index = 9) and (Linha[J] <> ';')) then
+         EscreverTexto := EscreverTexto + Linha[J]
+       else if ((Index = 9) and (Linha[J] = ';')) then
+       begin
+         Index := Index + 1;
+         Pessoa.Endereco.Bairro := EscreverTexto;
+         EscreverTexto := '';
+       end
 
-          // Logradouro
-          else if ((Index = 10) and (Linha[J] <> ';')) then
-            EscreverTexto := EscreverTexto + Linha[J]
-          else if ((Index = 10) and (Linha[J] = ';')) then
-          begin
-            Index := Index + 1;
-            Pessoa.Endereco.Logradouro := EscreverTexto;
-            EscreverTexto := '';
-          end
+       // Logradouro
+       else if ((Index = 10) and (Linha[J] <> ';')) then
+         EscreverTexto := EscreverTexto + Linha[J]
+       else if ((Index = 10) and (Linha[J] = ';')) then
+       begin
+         Index := Index + 1;
+         Pessoa.Endereco.Logradouro := EscreverTexto;
+         EscreverTexto := '';
+       end
 
-          // Propiedade
-          else if ((Index = 11) and (Linha[J] <> ';')) then
-            EscreverTexto := EscreverTexto + Linha[J]
-          else if ((Index = 11) and (Linha[J] = ';')) then
-          begin
-            Index := Index + 1;
-            Pessoa.Endereco.Propriedade := EscreverTexto;
-            EscreverTexto := ';';
-          end;
-        end;
+       // Propiedade
+       else if ((Index = 11) and (Linha[J] <> ';')) then
+         EscreverTexto := EscreverTexto + Linha[J]
+       else if ((Index = 11) and (Linha[J] = ';')) then
+       begin
+         Index := Index + 1;
+         Pessoa.Endereco.Propriedade := EscreverTexto;
+         EscreverTexto := ';';
+       end;
+     end;
 
-        FGuardarCadastro.Add(Pessoa);
-      end;
-    finally
-      CarregarGrid;
-    end;
-  end
-  else
-    raise Exception.Create('Arquivo não selecionado');
+     FGuardarCadastro.Add(Pessoa);
+   end;
+ finally
+   CarregarGrid;
+ end;
 end;
 
 
@@ -661,21 +693,29 @@ end;
 
 procedure TFormMain.CondicaoTravas;
 begin
-  // Validações do campo de Pessoa
-  if Trim(edtNomeCompleto.Text) = '' then
-    raise Exception.Create('Preencha o campo de nome!')
-  else if Trim(edtTelefone.Text) = '' then
+  try
+   if Trim(edtNomeCompleto.Text) = '' then
+   raise Exception.Create('Preencha o campo de nome!')
+   else if Trim(edtTelefone.Text) = '' then
     raise Exception.Create('Preencha o campo de Telefone!')
-  else if Trim(edtEmail.Text) = '' then
+   else if Trim(edtEmail.Text) = '' then
     raise Exception.Create('Preencha o campo de Email!')
-  else if Trim(edtCPF.Text) = '' then
+   else if Trim(edtCPF.Text) = '' then
     raise Exception.Create('Preencha o campo de CPF!')
-  else if dateDataNascimento.Date = 0 then
+   else if dateDataNascimento.Date = 0 then
     raise Exception.Create('Preencha o número de Telefone')
-  else if Trim(cmbUF.Text) = '' then
+   else if Trim(cmbUF.Text) = '' then
     raise Exception.Create('Preencha a UF')
-  else if Trim(edtCidade.Text) = '' then
+   else if Trim(edtCidade.Text) = '' then
     raise Exception.Create('Preencha a Cidade');
+  finally
+    GerarStatus(btnEditar);
+  end;
+end;
+
+procedure TFormMain.DBGrid1DblClick(Sender: TObject);
+begin
+  btnEditarClick(nil);
 end;
 
 function TFormMain.ObterPessoa(ID: Integer): TPessoa;
